@@ -24,6 +24,13 @@ RUN \
   sed -i 's/^\(dir .*\)$/# \1\ndir \/data/' /etc/redis/redis.conf && \
   sed -i 's/^\(logfile .*\)$/# \1/' /etc/redis/redis.conf
 
+RUN cp /usr/share/zoneinfo/Asia/Taipei /etc/localtime && \
+    echo 'Asia/Taipei' > /etc/timezone && date
+RUN sed -e 's;UTC=yes;UTC=no;' -i /etc/default/rcS
+
+RUN echo "!/bin/sh ntpdate ntp.ubuntu.com" >> /etc/cron.daily/ntpdate \
+    && chmod 750 /etc/cron.daily/ntpdate
+
 # Define mountable directories.
 VOLUME ["/data"]
 
